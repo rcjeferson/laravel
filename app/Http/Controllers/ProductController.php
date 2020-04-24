@@ -91,6 +91,15 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        $product = $this->product->find($id);
+
+        if (!$product) {
+            return redirect()->route('products.index');
+        } else {
+            return view('admin.pages.products.edit', [
+                'product' => $product,
+            ]);
+        }
     }
 
     /**
@@ -102,6 +111,24 @@ class ProductController extends Controller
      */
     public function update(StoreUpdateProductRequest $request, $id)
     {
+        $product = $this->product->find($id);
+        
+        $data = $request->all();
+
+        if ($request->hasFile('image') && $request->image->isValid())
+        {
+            if ($product->image && Storage::exists($product->image))
+            {
+                Storage::delete($product->image);
+            }
+            
+            $imagePath = $request->image->store('products');
+            $data['image'] = $imagePath;
+        }
+
+        $product->update($data);
+
+        return redirect()->route('products.index');
     }
 
     /**
