@@ -139,6 +139,20 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        $product = $this->product->find($id);
+
+        if ($product->image && Storage::exists($product->image))
+        {
+            Storage::delete($product->image);
+        }
+
+        $product->delete();
+
+        if ($product) {
+            return redirect()->route('products.index');
+        } else {
+            return abort(404);
+    }
     }
 
     /**
