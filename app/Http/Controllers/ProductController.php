@@ -22,6 +22,11 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $products = $this->product->paginate();
+        
+        return view('admin.pages.products.index', [
+            'products' => $products,
+        ]);
     }
 
     /**
