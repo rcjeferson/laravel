@@ -57,6 +57,16 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        $product = $this->product->find($id);
+
+        if (!$product) {
+            return redirect()->route('products.index');
+        } else {
+            return view('admin.pages.products.show', [
+                'product' => $product,
+            ]);
+        }
+
     }
 
     /**
