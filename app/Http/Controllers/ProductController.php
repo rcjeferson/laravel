@@ -56,7 +56,7 @@ class ProductController extends Controller
         {
             $imagePath = $request->image->store('products');
             $data['image'] = $imagePath;
-    }
+        }
 
         $this->product->create($data);
 
@@ -152,7 +152,7 @@ class ProductController extends Controller
             return redirect()->route('products.index');
         } else {
             return abort(404);
-    }
+        }
     }
 
     /**
@@ -160,5 +160,13 @@ class ProductController extends Controller
      */
     public function search(Request $request)
     {
+        $filters = $request->except('_token');
+
+        $products = $this->product->search($request->filter);
+
+        return view('admin.pages.products.index', [
+            'products' => $products,
+            'filters'  => $filters,
+        ]);
     }
 }
