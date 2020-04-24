@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreUpdateProductRequest;
+use Illuminate\Support\Facades\Storage;
+
 class ProductController extends Controller
 {
     protected $request;
@@ -36,6 +39,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        return view('admin.pages.products.create');
     }
 
     /**
@@ -46,7 +50,17 @@ class ProductController extends Controller
      */
     public function store(StoreUpdateProductRequest $request)
     {
+        $data = $request->all();
 
+        if ($request->hasFile('image') && $request->image->isValid())
+        {
+            $imagePath = $request->image->store('products');
+            $data['image'] = $imagePath;
+    }
+
+        $this->product->create($data);
+
+        return redirect()->route('products.index');
     }
 
     /**
